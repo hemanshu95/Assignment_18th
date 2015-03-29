@@ -34,16 +34,38 @@ class Interpolate:
         res=array((mat[0][0],))                                          
         for i in range(1,n):
             prod=(-1*A[0],1)                                               
-                                                                            
+
             for j in range(1,i):
                 prod=P.polymul(prod,(-1*A[j],1))                              
             res=P.polyadd(res,array(prod)*mat[0][i])                  
-        return (list(res))                                               
+        return (list(res))
+    def graph_plot(self,x_values,y_values):
+        import numpy as np
+        import matplotlib.pyplot as plt
+        L=self.solve(x_values,y_values,"lagrange")
+        n=len(x_values)
+        def F(x):
+            k=0
+            for i in range(n):
+                k+=L[i]*(x**i)
+            return k
+        a=float(input("Enter lower limit of x in graph : "))
+        b=float(input("Enter upper limit of x in graph : "))
+        c=float(input("Enter lower limit of y in graph : "))
+        d=float(input("Enter upper limit of y in graph : "))
+        x=np.arange(a,b,0.001)
+        y=[F(i) for i in x]
+        plt.plot(x,y,'k')
+        plt.plot(x_values,y_values,'ro')
+        plt.plot([0,0],[max(d,np.max(y)),min(c,np.min(y))],'b',[np.max(x),np.min(x)],[0,0],'b')
+        plt.show()
+
 
 apx=Interpolate()                                                          
 for method in ["newton","lagrange"]:
     sol=apx.solve([1,2,3],[0,-1,0],method)
     print(sol)
+apx.graph_plot([1,2,3],[0,-1,0])
                
     
 
