@@ -98,7 +98,7 @@ class Integrate:
         anim = anime.FuncAnimation(fig, animate, interval=20)
         plt.show()
 X1=Integrate()
-X,Y,x,y=[],[],[],[]
+X,Y,x,y = [],[],[],[]
 X1.graph_plot(2,[1,0,0])
 
 
