@@ -1,5 +1,6 @@
 __author__ = 'hemanshu'
 import numpy as np
+import matplotlib.pyplot as plt
 class LPsolver:
     def __init__(self):
         self.x=None
@@ -139,7 +140,80 @@ class LPsolver:
                 print(self.x[i])
                 final_sum=final_sum+(self.x[i]*self.a[i])
             print()
-sol=LPsolver()
+    def graph_plot(self,objective,constraints_value,constraints):
+        self.a=np.array(objective,float)
+        self.b=np.array(constraints_value,float)
+        self.c=np.array(constraints,float)
+        self.m=np.size(self.b)
+        x1=0
+        x=None
+        y=None
+        X=None
+        Y=None
+        TY=None
+        Common=[(1,1)]
+        min1=self.b[0]/self.c[0][0]
+        max1=self. b[0]/self.c[0][0]
 
-solution=sol.solve('Simplex',[1,3],[10,5,4],[[1,2],[1,0],[0,1]])
-print(solution)
+        for i in range(self.m):
+            x1=self.b[i]/(self.c[i][0])
+            if x1<min1:
+                min1=x1
+            if x1>max1:
+                max1=x1
+        if min1>0:
+            max1=min1
+        if max1<0:
+            max1=-1*max1
+        min1=0
+        #print(max1,min1)
+        flag=2
+        L=[(0,0)]
+
+        #print("vgdysubj",x1)
+        X=np.arange(min1,max1,0.0001)
+
+        Y=np.array([(self.b[0]-(self.c[0][0]*k))/self.c[0][1] for k in X])
+        plt.plot(X,Y)
+        for i in range(1,self.m):
+            y=np.array([(self.b[i]-(self.c[i][0]*k))/self.c[i][1] for k in X])
+            plt.plot(X,y)
+            flag=2
+        for j in range(np.size(X)):
+                if y[j]<Y[j]:
+                    Y[j]=y[j]
+                    if flag!=0:
+                        Common.append((X[j],y[j]))
+                    flag=0
+                else:
+                    if flag!=1:
+                        Common.append((X[j],y[j]))
+                    flag=1
+        for i in range(np.size(X)):
+            L.append((X[i],Y[i]))
+
+        for k in Common:
+            if k not in L:
+                Common.remove(k)
+        max1=round((self.a[0]*Common[0][0])+((self.a[1]*Common[0][1])),4)
+        for i in Common:
+            if max1<round((self.a[0]*i[0])+((self.a[1]*i[1])),4):
+                max1=round((self.a[0]*i[0])+((self.a[1]*i[1])),4)
+        plt.show()
+        plt.plot([0.02]*np.size(X),Y,X,[0.02]*np.size(Y),X,Y)
+        print(max1)
+        plt.show()
+        return max1
+
+
+
+
+
+
+
+
+sol=LPsolver()
+max_val=sol.graph_plot([3,2],[18,42,24],[[2,1],[2,3],[3,1]])
+#solution=sol.sol('Simplex',[1,3],[10,5,4],[[1,2],[1,0],[0,1]])
+#print(solution)
+
