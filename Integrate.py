@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as anime
-import time
+
 class Integrate:
     def solve(self,order,coeff,method):
         def f(x):
@@ -69,37 +69,36 @@ class Integrate:
 
         # First set up the figure, the axis, and the plot element we want to animate
         fig = plt.figure()
-        ax1 = plt.axes(xlim=(0, 10), ylim=(0, 10))
+        ax1 = plt.axes()
 
         def animate(i):
 
             T=[]
             global X,Y,x,y
             ax1.clear()
+            if len(X)>2**8:
+                X=[a,b]
             for i in range(len(X)-1):
                 T.extend([X[i],(X[i]+X[i+1])/2])
             T.append(X[-1])
             X=T
-            print(T)
-
+            #print(T)
+            
 
             Y=[f(i) for i in X]
 
-            ax1.plot(x,y,X,Y)
+            ax1.plot(x,y,'k',X,Y)
+            plt.xlabel(' X - Axis ')
+            plt.ylabel(' Y - Axis ')            
             for i in range(np.size(X)):
-                ax1.plot([X[i],X[i]],[Y[i],0])
-
-
-            time.sleep(1)
+                ax1.plot([X[i],X[i]],[Y[i],0],'r')
 
 
 
 
-        anim = anime.FuncAnimation(fig, animate, interval=20)
-        plt.show()
+        anim = anime.FuncAnimation(fig, animate, interval=300)
+        
+        plt.show(anim)
 X1=Integrate()
 X,Y,x,y = [],[],[],[]
 X1.graph_plot(2,[1,0,0])
-
-
-
