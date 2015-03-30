@@ -88,7 +88,7 @@ class PolynomialSolver:
         plt.plot(l,self.F(n,L,l),'ro')        
         m=(u+l)/2
         while(u-l>E):
-            print([u,m,l])
+            #print([u,m,l])
             m=(u+l)/2
 
             if self.F(n,L,u)*self.F(n,L,m)<0:
