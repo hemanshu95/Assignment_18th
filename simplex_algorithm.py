@@ -1,6 +1,7 @@
 __author__ = 'hemanshu'
 import numpy as np
 import matplotlib.pyplot as plt
+from random import randint
 class LPsolver:
     def __init__(self):
         self.x=None
@@ -146,11 +147,11 @@ class LPsolver:
         self.c=np.array(constraints,float)
         self.m=np.size(self.b)
         x1=0
-        x=None
+        
         y=None
         X=None
         Y=None
-        TY=None
+        
         Common=[(1,1)]
         min1=self.b[0]/self.c[0][0]
         max1=self. b[0]/self.c[0][0]
@@ -169,17 +170,30 @@ class LPsolver:
         #print(max1,min1)
         flag=2
         L=[(0,0)]
-
+        
+        fig=plt.figure()
+        
+        constraints=fig.add_subplot(121)
+        
+        solution=fig.add_subplot(122)
+        
+        
         #print("vgdysubj",x1)
-        X=np.arange(min1,max1,0.0001)
-
+        X=np.arange(min1,max1+0.0001,0.0001)
+        print(X[0],X[-1])
+        S=['r','g','b']
         Y=np.array([(self.b[0]-(self.c[0][0]*k))/self.c[0][1] for k in X])
-        plt.plot(X,Y)
+        constraints.plot(X,Y,'k')
+        #constraints.text(max(list(Y))+10,max(list(X))-20,"Constraints")
+        constraints.fill_between(X,Y,facecolor=S[0],alpha=0.4)
+        
         for i in range(1,self.m):
             y=np.array([(self.b[i]-(self.c[i][0]*k))/self.c[i][1] for k in X])
-            plt.plot(X,y)
+            #constraints.plot(X,)     
+            constraints.plot(X,y,'k')
+            constraints.fill_between(X,y,facecolor=S[i%3],alpha=0.4)
             flag=2
-        for j in range(np.size(X)):
+            for j in range(np.size(X)):
                 if y[j]<Y[j]:
                     Y[j]=y[j]
                     if flag!=0:
@@ -189,27 +203,38 @@ class LPsolver:
                     if flag!=1:
                         Common.append((X[j],y[j]))
                     flag=1
+        
         for i in range(np.size(X)):
             L.append((X[i],Y[i]))
-
+        print(Common)
         for k in Common:
             if k not in L:
                 Common.remove(k)
+        maxa=(0,0)
+        print(Common)
+        for i in range(len(Common)):
+            Common[i]=(round(Common[i][0],3),round(Common[i][1],3))
+        print(Common)
         max1=round((self.a[0]*Common[0][0])+((self.a[1]*Common[0][1])),4)
+        print(max1)
         for i in Common:
             if max1<round((self.a[0]*i[0])+((self.a[1]*i[1])),4):
                 max1=round((self.a[0]*i[0])+((self.a[1]*i[1])),4)
-        plt.show()
-        plt.plot([0.02]*np.size(X),Y,X,[0.02]*np.size(Y),X,Y)
+                maxa=i
+                print(max1)
+        
+        solution.plot(X,Y,'k')
+        for i in range(len(Common)):
+            solution.plot(Common[i][0],Common[i][1],'yo')
+            
+        solution.plot(maxa[0],maxa[1],'ko',markersize=7)
+        solution.text(maxa[0],maxa[1],"  Z(max) = {} ".format(max1) )
+        solution.fill_between(X,Y,facecolor=S[randint(0,2)])
+        #solution.text(" Solution ")
         print(max1)
-        plt.show()
+        plt.show(fig)        
+        #plt.show()
         return max1
-
-
-
-
-
-
 
 
 sol=LPsolver()
