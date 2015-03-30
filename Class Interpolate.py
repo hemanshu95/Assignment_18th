@@ -1,77 +1,96 @@
+import matplotlib.pyplot as plt
 class Interpolate:
     
-    def solve(self,A,B,method):
+    def solve(self,L,M,xlower,xupper,method):
         if(method=="newton"):
-            return (self.Newton(A,B))
+            return (self.Newton(L,M,xlower,xupper))
         else:
-            return (self.Lagrange(A,B))
+            return (self.Lagrange(L,M,xlower,xupper))
     
-    def Lagrange(self,A,B):                                                
-       
+    def plotgraph(self,y_values, xlower, xupper) :
+        def drange(start, stop, step):
+            r = start
+            while r < stop:
+                yield r
+                r += step
+        from numpy.polynomial import polynomial as P 
+        i0=drange(xlower, xupper, 0.1)
+        x=[]
+        for xd in i0 :
+            x.append(xd)
+        y=[]
+        for x_val in x :
+            y.append(P.polyval(x_val, y_values))
+        
+        plt.plot(x, y,)
+        plt.xlabel('values of x')
+        plt.ylabel('values of p(x)')
+        plt.show()
+
+    def Lagrange(self,L,M,xlower,xupper):                                                
+        
+        
         from numpy import array
         from numpy.polynomial import polynomial as P
-        n=len(A)                                                           
-        w=(-1*A[0],1)                                                      
+        n=len(L)                                                        
+        w=(-1*L[0],1)                                                      
         for i in range(1,n):
-            w=P.polymul(w,(-1*A[i],1))                                    
+            w=P.polymul(w,(-1*L[i],1))                                    
         result=array([0.0 for i in range(len(w)-1)])                    
         derivative=P.polyder(w)                                             
         for i in range(n):
-            result+=(P.polydiv(w,(-1*A[i],1))[0]*B[i])/P.polyval(A[i],derivative)   
-        return(list(result)) 
-        
-    def Newton(self,A,B):                                                   
+            y_values=(P.polydiv(w,(-1*L[i],1))[0]*M[i])/P.polyval(L[i],derivative)
+            self.plotgraph(y_values, xlower, xupper)
+            result+=(P.polydiv(w,(-1*L[i],1))[0]*M[i])/P.polyval(L[i],derivative)   
+        return(list(result))                                                
+    def Newton(self,L,M):                                                   
        
+        
         from numpy import array
         from numpy.polynomial import polynomial as P
-        n=len(A)                                                            
+        n=len(L)                                                            
         mat=[[0.0 for i in range(n)] for j in range(n)]                    
         for i in range(n):                                                 
-            mat[i][0]=B[i]
+            mat[i][0]=M[i]
         for i in range(1,n):                                               
             for j in range(n-i):
-                mat[j][i]=(mat[j+1][i-1]-mat[j][i-1])/(A[j+i]-A[j])
-        res=array((mat[0][0],))                                          
+                mat[j][i]=(mat[j+1][i-1]-mat[j][i-1])/(L[j+i]-L[j])
+        result=array((mat[0][0],))                                          
         for i in range(1,n):
-            prod=(-1*A[0],1)                                               
-
+            prod=(-1*L[0],1)                                               
+                                                                            
             for j in range(1,i):
-                prod=P.polymul(prod,(-1*A[j],1))                              
-            res=P.polyadd(res,array(prod)*mat[0][i])                  
-        return (list(res))
-    def graph_plot(self,x_values,y_values):
-        import numpy as np
-        import matplotlib.pyplot as plt
-        L=self.solve(x_values,y_values,"lagrange")
-        n=len(x_values)
-        def F(x):
-            k=0
-            for i in range(n):
-                k+=L[i]*(x**i)
-            return k
-        a=float(input("Enter lower limit of x in graph : "))
-        b=float(input("Enter upper limit of x in graph : "))
-        c=float(input("Enter lower limit of y in graph : "))
-        d=float(input("Enter upper limit of y in graph : "))
-        x=np.arange(a,b,0.001)
-        y=[F(i) for i in x]        
-        plt.plot([0,0],[max(d,np.max(y)),min(c,np.min(y))],'b',[np.max(x),np.min(x)],[0,0],'b')
-        
-        
-        plt.plot(x,y,'k')
-        plt.plot(x_values,y_values,'ro')
-        
-        for i in range(len(x_values)):
-            plt.text(x_values[i],y_values[i],"  ({},{}) ".format(x_values[i],y_values[i]))        
-        plt.show()
+                prod=P.polymul(prod,(-1*L[j],1))                              
+            result=P.polyadd(result,array(prod)*mat[0][i])                  
+        return (list(result))         
+L=[-9,-4,-1,7]
+
+M=[5,2,-2,9]
+plt.plot(L,M,'ro')
+plt.plot([min(L)-2,max(L)+2],[0,0],'k-')
+plt.plot([0,0],[min(M)-2,max(M)+2],'k-')
+xlower=int(input('Enter the lower range of x to be plotted:'))
+xupper=int(input('Enter the upper range of x to be plotted:'))
+method=input('Enter the method - newton/lagrange:')
+apx = Interpolate()
+l=apx.solve(L,M,xlower,xupper,method)
+def drange(start, stop, step):
+    r = start
+    while r < stop:
+        yield r
+        r += step
+from numpy.polynomial import polynomial as P 
+i0=drange(xlower, xupper, 0.1)
+x=[]
+for xd in i0 :
+    x.append(xd)
+y=[]
+for x_val in x :
+    y.append(P.polyval(x_val, l))
+import matplotlib.pyplot as plt
+plt.plot(x, y,'k',linewidth='3')
+plt.xlabel('values of x')
+plt.ylabel('values of p(x)')
+plt.show()
 
 
-apx=Interpolate()                                                          
-for method in ["newton","lagrange"]:
-    sol=apx.solve([1,2,3],[0,-1,0],method)
-    print(sol)
-apx.graph_plot([1,2,3],[0,-1,0])
-               
-    
-
-   
