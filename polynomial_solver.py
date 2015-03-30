@@ -28,9 +28,9 @@ class PolynomialSolver:
             return([l,u])
         if(method=='secant'):
             print("Enter lower bound of interval containing the root")
-            l=int(input())
+            l=float(input())
             print("Enter upper bound of interval containing the root")
-            u=int(input())
+            u=float(input())
             print("Enter maximum itertions")
             q=int(input())
             while(abs(self.F(n,L,l))>0.00001 and q>0):
@@ -76,11 +76,16 @@ class PolynomialSolver:
         l=float(input("Enter lower bound of interval containing the root : "))
         u=float(input("Enter upper bound of interval containing the root : "))
         E=float(input("Enter the value of E(epsilon) : "))
-        x=np.arange(l,u,E)
+        x=np.arange(l-1,u+1,E)
         y=[self.F(n,L,i) for i in x]
-        plt.plot(x,y,'k')
+        plt.plot([0,0],[np.max(y),np.min(y)],'b',[np.max(x),np.min(x)],[0,0],'b')        
+        plt.plot(x,y,'k')        
+        plt.plot([u,u],[0,self.F(n,L,u)],'g--')
+        
         plt.plot(u,self.F(n,L,u),'ro')
-        plt.plot(l,self.F(n,L,l),'ro')
+        
+        plt.plot([l,l],[0,self.F(n,L,l)],'g--')
+        plt.plot(l,self.F(n,L,l),'ro')        
         m=(u+l)/2
         while(u-l>E):
             print([u,m,l])
@@ -100,11 +105,14 @@ class PolynomialSolver:
                 else:
                     m=l
                     u=l
+            
+            plt.plot([m,m],[0,self.F(n,L,m)],'g--')
             plt.plot(m,self.F(n,L,m),'ro')
         #print([u,m,l])
         #print(u,m,l,self.F(n,L,m))
         plt.plot(m,self.F(n,L,m),'yo')
-        plt.plot([0,0],[np.max(y),np.min(y)],'b',[np.max(x),np.min(x)],[0,0],'b')
+        plt.xlabel(" X-Axis ")
+        plt.ylabel(" Y-Axis ")
         plt.show()
 
 sol=PolynomialSolver()
