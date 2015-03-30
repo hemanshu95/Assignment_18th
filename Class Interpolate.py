@@ -54,10 +54,15 @@ class Interpolate:
         c=float(input("Enter lower limit of y in graph : "))
         d=float(input("Enter upper limit of y in graph : "))
         x=np.arange(a,b,0.001)
-        y=[F(i) for i in x]
+        y=[F(i) for i in x]        
+        plt.plot([0,0],[max(d,np.max(y)),min(c,np.min(y))],'b',[np.max(x),np.min(x)],[0,0],'b')
+        
+        
         plt.plot(x,y,'k')
         plt.plot(x_values,y_values,'ro')
-        plt.plot([0,0],[max(d,np.max(y)),min(c,np.min(y))],'b',[np.max(x),np.min(x)],[0,0],'b')
+        
+        for i in range(len(x_values)):
+            plt.text(x_values[i],y_values[i],"  ({},{}) ".format(x_values[i],y_values[i]))        
         plt.show()
 
 
